@@ -42,30 +42,50 @@ return `${h}, ${t} ${b} ${y} ${jam}:${menit}`
 // tambah data kegiatan
 function tambahData(){
 
-let data={
+  let data = {
 
-action:"add",
-tanggal:document.getElementById("tanggal").value,
-kegiatan:document.getElementById("kegiatan").value,
-lokasi:document.getElementById("lokasi").value
+    action: "add",
+    tanggal: document.getElementById("tanggal").value,
+    kegiatan: document.getElementById("kegiatan").value,
+    lokasi: document.getElementById("lokasi").value
+
+  };
+
+  fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify(data)
+  })
+  .then(r => r.json())
+  .then(res => {
+
+    if(res.status === "success"){
+
+      // Hapus semua isi input setelah berhasil disimpan
+      document.getElementById("tanggal").value = "";
+      document.getElementById("kegiatan").value = "";
+      document.getElementById("lokasi").value = "";
+
+      toast("Data berhasil disimpan");
+
+      // Refresh tabel dan statistik
+      loadData();
+
+    } else {
+
+      toast("Data gagal disimpan");
+
+    }
+
+  })
+  .catch(error => {
+
+    console.error("Error:", error);
+
+    toast("Terjadi kesalahan saat menyimpan data");
+
+  });
 
 }
-
-fetch(API_URL,{
-method:"POST",
-body:JSON.stringify(data)
-})
-.then(r=>r.json())
-.then(res=>{
-
-toast("Data berhasil disimpan")
-
-loadData()
-
-})
-
-}
-
 
 
 // load data dari spreadsheet
